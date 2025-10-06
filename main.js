@@ -4,6 +4,28 @@ const character = {
     maxHp: 100,
     elementHP: document.getElementById("health-character"),
     elementBar: document.getElementById("progressbar-character"),
+
+    updateHp() {
+        this.elementBar.style.width = (this.hp / this.maxHp * 100) + "%";
+        this.elementHP.textContent = `${this.hp} / 100`;
+
+        if (this.hp > 75) {
+            this.elementBar.style.background = "lime";
+        } else if(this.hp > 50){
+            this.elementBar.style.background = "yellow";
+        } else if(this.hp >20){
+            this.elementBar.style.background = "orange";
+        } else{
+            this.elementBar.style.background = "red";
+        }
+    },
+
+    attack(defender, minDamage=2, maxDamage=15) {
+    const damage = Math.floor(Math.random() * (maxDamage - minDamage + 1)) + minDamage;
+    defender.hp = Math.max(0, defender.hp - damage);
+    defender.updateHp();
+    console.log(`${this.name} атакує ${defender.name} на ${damage} урона!`);
+    },
 };
 
 const enemy = {
@@ -12,6 +34,8 @@ const enemy = {
     maxHp: 100,
     elementHP: document.getElementById("health-enemy"),
     elementBar: document.getElementById("progressbar-enemy"),
+    updateHp: character.updateHp,
+    attack: character.attack
 };
 
 const enemy2 = {
@@ -20,39 +44,19 @@ const enemy2 = {
     maxHp: 100,
     elementHP: document.getElementById("health-enemy2"),
     elementBar: document.getElementById("progressbar-enemy2"),
+    updateHp: character.updateHp,
+    attack: character.attack
 };
 
-function updateHp(pokemon) {
-    pokemon.elementBar.style.width = (pokemon.hp / pokemon.maxHp * 100) + "%";
-    pokemon.elementHP.textContent = `${pokemon.hp} / 100`;
-
-    if (pokemon.hp > 75) {
-        pokemon.elementBar.style.background = "lime";
-    } else if(pokemon.hp > 50){
-        pokemon.elementBar.style.background = "yellow";
-    } else if(pokemon.hp >20){
-        pokemon.elementBar.style.background = "orange";
-    } else{
-        pokemon.elementBar.style.background = "red";
-    }
-}
-
-function attack(attacker, defender, minDamage=2, maxDamage=15) {
-    const damage = Math.floor(Math.random() * (maxDamage - minDamage + 1)) + minDamage;
-    defender.hp = Math.max(0, defender.hp - damage);
-    updateHp(defender);
-    console.log(`${attacker.name} атакує ${defender.name} на ${damage} урона!`);
-}
-
-document.getElementById("dbtn-kick").addEventListener("click", function () { //дефолт
-    attack(character, enemy);
-    attack(enemy, character);
-    if (Winner()) return; 
+document.getElementById("dbtn-kick").addEventListener("click", function () {
+    character.attack(enemy);
+    enemy.attack(character);
+    if (Winner()) return;
 });
 
-document.getElementById("kbtn-kick").addEventListener("click", function () { //крит
-    attack(character, enemy, 10, 25);  
-    attack(enemy, character, 5, 15);  
+document.getElementById("kbtn-kick").addEventListener("click", function () {
+    character.attack(enemy, 10, 25);
+    enemy.attack(character, 5, 15);
     if (Winner()) return;
 });
 
