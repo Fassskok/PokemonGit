@@ -8,17 +8,18 @@ class Pokemon {
     }
 
     updateHp() {
-        const percent = (this.hp / this.maxHp) * 100;
-        this.elementBar.style.width = `${percent}%`;
+        this.elementBar.style.width = (this.hp / this.maxHp * 100) + "%";
         this.elementHP.textContent = `${this.hp} / ${this.maxHp}`;
 
-        const color =
-            this.hp > 75 ? "lime" :
-            this.hp > 50 ? "yellow" :
-            this.hp > 20 ? "orange" :
-            "red";
-
-        this.elementBar.style.background = color;
+        if (this.hp > 75) {
+            this.elementBar.style.background = "lime";
+        } else if (this.hp > 50) {
+            this.elementBar.style.background = "yellow";
+        } else if (this.hp > 20) {
+            this.elementBar.style.background = "orange";
+        } else {
+            this.elementBar.style.background = "red";
+        }
     }
 
     attack(defender, minDamage = 2, maxDamage = 15) {
