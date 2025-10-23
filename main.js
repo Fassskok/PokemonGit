@@ -90,6 +90,26 @@ function Winner() {
   return false;
 }
 
+function clickCounter(limit = 6) {
+  let count = 0;
+  return function (btnName) {
+    if (count < limit) {
+      count++;
+      console.log(`${btnName}: ${count} кліків`);
+      console.log(`Залишилось: ${limit - count}`);
+    } else {
+      console.log(`${btnName}: досягнуто ліміт у ${limit} кліків`);
+    }
+  };
+}
+
+const handleClick = clickCounter(6);
+
+document.querySelectorAll("button").forEach(btn => {
+  const handleClick = clickCounter(6);
+  btn.addEventListener("click", () => handleClick(btn.textContent));
+});
+
 document.getElementById("dbtn-kick").addEventListener("click", () => {
   character.attack(enemy);
   enemy.attack(character);
