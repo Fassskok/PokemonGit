@@ -1,65 +1,25 @@
-const character = { 
-  name: "Pikachu",
-  hp: 100,
-  maxHp: 100,
-  elementHP: document.getElementById("health-character"),
-  elementBar: document.getElementById("progressbar-character"),
-  updateHp,
-  attack,
-};
+import { Pokemon } from "./pokemon.js";
 
-const enemy = {
-  name: "Charmander",
-  hp: 100,
-  maxHp: 100,
-  elementHP: document.getElementById("health-enemy"),
-  elementBar: document.getElementById("progressbar-enemy"),
-  updateHp,
-  attack,
-};
+const logsDiv = document.createElement("div");
+logsDiv.id = "logs";
+document.body.appendChild(logsDiv);
 
-const enemy2 = {
-  name: "Mewtwo",
-  hp: 100,
-  maxHp: 100,
-  elementHP: document.getElementById("health-enemy2"),
-  elementBar: document.getElementById("progressbar-enemy2"),
-  updateHp,
-  attack,
-};
+function addLog(message, type = "neutral") {
+  const logs = document.getElementById("logs");
+  const p = document.createElement("p");
+  p.textContent = message;
 
-function updateHp() {
-  this.elementBar.style.width = (this.hp / this.maxHp * 100) + "%";
-  this.elementHP.textContent = `${this.hp} / ${this.maxHp}`;
-  if (this.hp > 75) {
-    this.elementBar.style.background = "lime";
-  } else if (this.hp > 50) {
-    this.elementBar.style.background = "yellow";
-  } else if (this.hp > 20) {
-    this.elementBar.style.background = "orange";
-  } else {
-    this.elementBar.style.background = "red";
-  }
+  if (type === "hero") p.style.color = "lime";
+  else if (type === "enemy") p.style.color = "red";
+  else p.style.color = "white";
+
+  logs.prepend(p);
 }
+window.addLog = addLog;
 
-function attack(defender, minDamage = 2, maxDamage = 15) {
-  const damage = Math.floor(Math.random() * (maxDamage - minDamage + 1)) + minDamage;
-  defender.hp = Math.max(0, defender.hp - damage);
-  defender.updateHp();
-  console.log(`${this.name} атакує ${defender.name} на ${damage} урона!`);
-}
-
-document.getElementById("dbtn-kick").addEventListener("click", function () {
-  character.attack(enemy);
-  enemy.attack(character);
-  if (Winner()) return;
-});
-
-document.getElementById("kbtn-kick").addEventListener("click", function () {
-  character.attack(enemy, 10, 25);
-  enemy.attack(character, 5, 15);
-  if (Winner()) return;
-});
+const character = new Pokemon("character", "Pikachu");
+const enemy = new Pokemon("enemy", "Charmander");
+character.isHero = true;
 
 function showResult(message) {
   const screen = document.getElementById("Result_Window");
@@ -69,21 +29,58 @@ function showResult(message) {
 }
 
 function Winner() {
-  if (character.hp === 0 && enemy.hp === 0) {
+  const { hp: chHp, name: chName } = character;
+  const { hp: enHp, name: enName } = enemy;
+
+  if (chHp === 0 && enHp === 0) {
     showResult("Нічия!");
+    addLog("Нічия!");
     return true;
   }
-  if (character.hp === 0) {
-    showResult(`🎉 ${enemy.name} Переміг! 🎉`);
+  if (chHp === 0) {
+    showResult(`🎉 ${enName} Переміг! 🎉`);
+    addLog(`${enName} виграв бій!`);
     return true;
   }
-  if (enemy.hp === 0) {
-    showResult(`🎉 ${character.name} Переміг! 🎉`);
+  if (enHp === 0) {
+    showResult(`🎉 ${chName} Переміг! 🎉`);
+    addLog(`${chName} виграв бій!`);
     return true;
   }
   return false;
 }
 
-document.getElementById("Restart_Button").addEventListener("click", function () {
+const clickCounter = (limit = 6) => {
+  let count = 0;
+  return (btn) => {
+    if (count < limit) {
+      count++;
+      const remaining = limit - count;
+      btn.textContent = `Клік ${count} (залишилось ${remaining})`;
+    } else {
+      btn.textContent = `Ліміт ${limit} вичерпано`;
+      btn.disabled = true;
+    }
+  };
+};
+
+document.querySelectorAll("button").forEach(btn => {
+  const handleClick = clickCounter(6);
+  btn.addEventListener("click", () => handleClick(btn));
+});
+
+document.getElementById("dbtn-kick").addEventListener("click", () => {
+  character.attack(enemy);
+  enemy.attack(character);
+  Winner();
+});
+
+document.getElementById("kbtn-kick").addEventListener("click", () => {
+  character.attack(enemy, 10, 25);
+  enemy.attack(character, 5, 15);
+  Winner();
+});
+
+document.getElementById("Restart_Button").addEventListener("click", () => {
   location.reload();
 });
