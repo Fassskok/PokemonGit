@@ -90,24 +90,23 @@ function Winner() {
   return false;
 }
 
-function clickCounter(limit = 6) {
+const clickCounter = (limit = 6) => {
   let count = 0;
-  return function (btnName) {
+  return (btn) => {
     if (count < limit) {
       count++;
-      console.log(`${btnName}: ${count} кліків`);
-      console.log(`Залишилось: ${limit - count}`);
+      const remaining = limit - count;
+      btn.textContent = `Клік ${count} (залишилось ${remaining})`;
     } else {
-      console.log(`${btnName}: досягнуто ліміт у ${limit} кліків`);
+      btn.textContent = `Ліміт ${limit} вичерпано`;
+      btn.disabled = true;
     }
   };
-}
-
-const handleClick = clickCounter(6);
+};
 
 document.querySelectorAll("button").forEach(btn => {
   const handleClick = clickCounter(6);
-  btn.addEventListener("click", () => handleClick(btn.textContent));
+  btn.addEventListener("click", () => handleClick(btn));
 });
 
 document.getElementById("dbtn-kick").addEventListener("click", () => {
