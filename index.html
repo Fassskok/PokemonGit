@@ -16,61 +16,43 @@
              src="./assets/Pokemon_logo.png"
              alt="Pokemon">
     </header>
+
     <div class="playground">
 
-        <div class="pokemon character">
+        <div class="pokemon player1">
             <span class="lvl">Lv. 1</span>
-            <img src="assets/Pikachu.png" class="sprite">
+            <img id="img-player1" src="./assets/Pikachu.png" class="sprite" alt="Player 1">
             <div class="details">
-                <h2 class="name" id="name-character">Pikachu</h2>
+                <h2 class="name" id="name-player1">Pikachu</h2>
                 <div class="hp">
                     <div class="bar">
-                        <div class="health" id="progressbar-character" style="width: 100%;"></div>
+                        <div class="health" id="progressbar-player1" style="width: 100%;"></div>
                     </div>
-                    <span class="text" id="health-character">100 / 100</span>
+                    <span class="text" id="health-player1">100 / 100</span>
                 </div>
             </div>
         </div>
 
         <div class="control">
-            <button class="button" id="dbtn-kick">
-                Звичайна атака
-            </button>
-            <button class="button" id="kbtn-kick">
-                Потужна атака
-            </button>
+
         </div>
 
-        <div class="pokemon enemy">
+        <div class="pokemon player2">
             <span class="lvl">Lv. 1</span>
-            <img src="assets/Charmander.png" class="sprite">
+            <img id="img-player2" src="" class="sprite" alt="Player 2">
             <div class="details">
-                <h2 class="name" id="name-enemy">Charmander</h2>
+                <h2 class="name" id="name-player2">Charmander</h2>
                 <div class="hp">
                     <div class="bar">
-                        <div class="health" id="progressbar-enemy" style="width: 100%;"></div>
+                        <div class="health" id="progressbar-player2" style="width: 100%;"></div>
                     </div>
-                    <span class="text" id="health-enemy">100 / 100</span>
+                    <span class="text" id="health-player2">100 / 100</span>
                 </div>
             </div>
         </div>
 
-        <div class="pokemon enemy" id="enemy2">
-            <span class="lvl">Lv. 1</span>
-            <img src="assets/Mewtwo.png" class="sprite">
-            <div class="details">
-                <h2 class="name" id="name-enemy2">Mewtwo</h2>
-            <div class="hp">
-                <div class="bar">
-                    <div class="health" id="progressbar-enemy2" style="width: 100%;"></div>
-                </div>
-                <span class="text" id="health-enemy2">100 / 100</span>
-            </div>
-        </div>
-    </div>
     </div>
 </div>
-
 
 <div class="Result_Window" id="Result_Window">
     <h2 id="Result_Text"></h2>
@@ -79,7 +61,6 @@
 
 <div class="catch_screen"></div>
 
-<script src="main.js"></script>
 <script type="module" src="main.js"></script>
 </body>
 </html>
