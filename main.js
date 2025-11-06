@@ -1,4 +1,6 @@
 import { Pokemon } from "./pokemon.js";
+import { clickCounter, showResult } from "./functions.js";
+import { pokemons } from "./pokemons.js";
 
 const logsDiv = document.createElement("div");
 logsDiv.id = "logs";
@@ -8,30 +10,49 @@ function addLog(message, type = "neutral") {
   const logs = document.getElementById("logs");
   const p = document.createElement("p");
   p.textContent = message;
-
   if (type === "hero") p.style.color = "lime";
   else if (type === "enemy") p.style.color = "red";
   else p.style.color = "white";
-
   logs.prepend(p);
 }
 window.addLog = addLog;
 
-const character = new Pokemon("character", "Pikachu");
-const enemy = new Pokemon("enemy", "Charmander");
-character.isHero = true;
+const pikachuData = pokemons.find(p => p.name === "Pikachu");
 
-function showResult(message) {
-  const screen = document.getElementById("Result_Window");
-  const text = document.getElementById("Result_Text");
-  text.textContent = message;
-  screen.style.display = "flex";
+const enemies = pokemons.filter(p => p.name !== "Pikachu");
+const randomEnemy = enemies[Math.floor(Math.random() * enemies.length)];
+
+const player1 = new Pokemon("player1", pikachuData);
+player1.isHero = true;
+
+function nextEnemy() {
+  const enemies = pokemons.filter(p => p.name !== "Pikachu");
+  const newEnemy = enemies[Math.floor(Math.random() * enemies.length)];
+
+  player2.name = newEnemy.name;
+  player2.hp = player2.maxHp = newEnemy.hp; 
+  player2.attacks = newEnemy.attacks;
+
+  document.getElementById("img-player2").src = newEnemy.img;
+  document.getElementById("name-player2").textContent = newEnemy.name;
+  player2.updateHp();
+
+  addLog(`Новий суперник — ${newEnemy.name}!`, "enemy");
 }
 
-function Winner() {
-  const { hp: chHp, name: chName } = character;
-  const { hp: enHp, name: enName } = enemy;
+document.getElementById("Restart_Button").addEventListener("click", () => {
+  location.reload();
+});
 
+const player2 = new Pokemon("player2", randomEnemy);
+
+document.getElementById("img-player2").src = randomEnemy.img;
+document.getElementById("name-player2").textContent = randomEnemy.name;
+
+
+function Winner() {
+  const { hp: chHp, name: chName } = player1;
+  const { hp: enHp, name: enName } = player2;
   if (chHp === 0 && enHp === 0) {
     showResult("Нічия!");
     addLog("Нічия!");
@@ -43,44 +64,42 @@ function Winner() {
     return true;
   }
   if (enHp === 0) {
-    showResult(`🎉 ${chName} Переміг! 🎉`);
     addLog(`${chName} виграв бій!`);
+    showResult(`🎉 ${chName} Переміг! 🎉`);
+    setTimeout(() => {
+      document.getElementById("Result_Window").style.display = "none";
+      nextEnemy();
+    }, 1000);
+
     return true;
   }
   return false;
 }
 
-const clickCounter = (limit = 6) => {
-  let count = 0;
-  return (btn) => {
-    if (count < limit) {
+const controlDiv = document.querySelector(".control");
+
+player1.attacks.forEach(attack => {
+  const btn = document.createElement("button");
+  btn.classList.add("button");
+  btn.textContent = `${attack.name} (${attack.maxCount})`;
+  controlDiv.appendChild(btn);
+
+  let count = 0; 
+  btn.addEventListener("click", () => {
+    if (count < attack.maxCount) {
       count++;
-      const remaining = limit - count;
-      btn.textContent = `Клік ${count} (залишилось ${remaining})`;
-    } else {
-      btn.textContent = `Ліміт ${limit} вичерпано`;
-      btn.disabled = true;
+      const remaining = attack.maxCount - count;
+      btn.textContent = `${attack.name} (${remaining})`;
+      player1.attack(player2, attack.minDamage, attack.maxDamage);
+      player2.attack(player1);
+      Winner();
+
+      if (remaining === 0) {
+        btn.disabled = true;
+        btn.textContent = `${attack.name} (0)`;
+      }
     }
-  };
-};
-
-document.querySelectorAll("button").forEach(btn => {
-  const handleClick = clickCounter(6);
-  btn.addEventListener("click", () => handleClick(btn));
+  });
 });
 
-document.getElementById("dbtn-kick").addEventListener("click", () => {
-  character.attack(enemy);
-  enemy.attack(character);
-  Winner();
-});
-
-document.getElementById("kbtn-kick").addEventListener("click", () => {
-  character.attack(enemy, 10, 25);
-  enemy.attack(character, 5, 15);
-  Winner();
-});
-
-document.getElementById("Restart_Button").addEventListener("click", () => {
-  location.reload();
-});
+console.log("Атаки Пікачу:", pikachuData.attacks);
