@@ -1,8 +1,12 @@
 export class Pokemon {
-  constructor(id, name) {
-    this.name = name;
-    this.hp = 100;
-    this.maxHp = 100;
+  constructor(id, data) {
+    this.name = data.name;
+    this.hp = data.hp;
+    this.maxHp = data.hp;
+    this.attacks = data.attacks;
+    this.img = data.img;
+    this.type = data.type;
+
     this.elementHP = document.getElementById(`health-${id}`);
     this.elementBar = document.getElementById(`progressbar-${id}`);
     this.updateHp();
@@ -25,6 +29,6 @@ export class Pokemon {
 
     const logText = `${this.name} атакує ${defender.name} на ${damage} урона! ${defender.name} має ${defender.hp} HP.`;
     const type = this.isHero ? "hero" : "enemy";
-    addLog(logText, type);
+    window.addLog(logText, type); 
   }
 }
