@@ -519,3 +519,29 @@ h1 {
   transform: translateY(1px);
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2) inset;
 }
+
+#logs {
+  width: 80%;
+  height: 180px;
+  margin: 25px auto;
+  background: linear-gradient(145deg, #2b1b4d, #1c0e35);
+  border: 3px solid #ffcb05;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(255, 203, 5, 0.4);
+  padding: 12px;
+  font-family: 'Comic Sans MS', 'Fredoka One', cursive;
+  font-size: 15px;
+  line-height: 1.4;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+  scrollbar-width: thin;
+  scrollbar-color: #ffcb05 #1c0e35;
+}
+
+#logs::-webkit-scrollbar-track {
+  background: #1c0e35;
+  border-radius: 10px;
+}
